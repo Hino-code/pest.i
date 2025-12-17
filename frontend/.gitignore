@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+server/.env
+
+# Build outputs
+dist
+build
+.vite
+
+# Vercel
+.vercel
+
+# Uploads (user-generated content)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.temp
