@@ -1,6 +1,0 @@
-[submodule "backend"]
-	path = backend
-	url = https://github.com/Hino-code/EWS-2.git
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/Hino-code/early-warning-system.git
