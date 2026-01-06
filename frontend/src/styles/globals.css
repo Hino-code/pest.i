@@ -1,0 +1,320 @@
+@import "./tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+
+  /* Premium Linear/Apple Inspired Palette - Light Mode */
+  /* Base: Porcelain & Zinc */
+  --background: #fdfdfd;
+  /* Almost white, softer than #ffffff */
+  --foreground: #18181b;
+  /* Zinc 950 - softer than pure black */
+
+  --card: #ffffff;
+  --card-foreground: #18181b;
+
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+
+  /* Brand: Sophisticated Indigo */
+  --primary: #5e6ad2;
+  /* Linear-esque Indigo */
+  --primary-foreground: #ffffff;
+
+  --secondary: #f4f4f5;
+  /* Zinc 100 */
+  --secondary-foreground: #18181b;
+
+  --muted: #f4f4f5;
+  /* Zinc 100 */
+  --muted-foreground: #71717a;
+  /* Zinc 500 */
+
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+
+  --destructive: #e11d48;
+  /* Rose 600 - richer than standard red */
+  --destructive-foreground: #ffffff;
+
+  /* Glassmorphism & Surface Tokens */
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --surface-1: #ffffff;
+  --surface-2: #f8fafc;
+  /* Slate 50 */
+
+  /* Semantic Colors - Softened */
+  --success: #10b981;
+  /* Emerald 500 */
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  /* Amber 500 */
+  --warning-foreground: #ffffff;
+  --error: #e11d48;
+  --error-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+
+  /* Data Visualization - Curated Palette */
+  --chart-1: #5e6ad2;
+  /* Indigo */
+  --chart-2: #22c55e;
+  /* Emerald */
+  --chart-3: #f97316;
+  /* Orange */
+  --chart-4: #8b5cf6;
+  /* Violet */
+  --chart-5: #06b6d4;
+  /* Cyan */
+  --chart-6: #e11d48;
+  /* Rose */
+
+  --border: #e4e4e7;
+  /* Zinc 200 */
+  --input: #e4e4e7;
+  --input-background: #ffffff;
+  --switch-background: #e4e4e7;
+
+  --ring: #5e6ad2;
+  /* Match primary */
+  --radius: 0.5rem;
+  /* Slightly tighter radius for cleaner look */
+
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #5e6ad2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e2e8f0;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #5e6ad2;
+
+  /* Logo Colors - Light Mode */
+  --logo-teal: #0D9488;
+  --logo-dark-green: #014933;
+  --logo-green: #059669;
+  --logo-darker-green: #007A55;
+  --logo-white: #ffffff;
+}
+
+/* Global Chart Glow & Smoothness */
+.recharts-cylinder-rectangle,
+.recharts-line-curve {
+  filter: drop-shadow(0 4px 6px rgba(94, 106, 210, 0.15));
+  /* Colored shadow matching primary */
+  transition: all 0.3s ease;
+}
+
+.recharts-dot {
+  transition: r 0.3s ease;
+}
+
+.recharts-active-dot circle {
+  filter: drop-shadow(0 0 8px rgba(94, 106, 210, 0.4));
+}
+
+.dark {
+  /* Premium Linear/Apple Inspired Palette - Dark Mode */
+  /* Base: Deep Slate/Zinc */
+  --background: #09090b;
+  /* Zinc 950 */
+  --foreground: #fafafa;
+  /* Zinc 50 */
+
+  --card: #121215;
+  /* Slightly lighter than bg */
+  --card-foreground: #fafafa;
+
+  --popover: #121215;
+  --popover-foreground: #fafafa;
+
+  --primary: #6366f1;
+  /* Indigo 500 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #27272a;
+  /* Zinc 800 */
+  --secondary-foreground: #fafafa;
+
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  /* Zinc 400 */
+
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+
+  --destructive: #f43f5e;
+  /* Rose 500 */
+  --destructive-foreground: #ffffff;
+
+  /* Glassmorphism & Surface Tokens */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(24, 24, 27, 0.6);
+  --surface-1: #18181b;
+  --surface-2: #27272a;
+
+  /* Semantic Colors - Dark & Vibrant */
+  --success: #34d399;
+  /* Emerald 400 */
+  --success-foreground: #09090b;
+  --warning: #fbbf24;
+  /* Amber 400 */
+  --warning-foreground: #09090b;
+  --error: #f43f5e;
+  --error-foreground: #ffffff;
+  --info: #60a5fa;
+  --info-foreground: #09090b;
+
+  /* Chart Colors - Neon/Glow */
+  --chart-1: #6366f1;
+  --chart-2: #34d399;
+  --chart-3: #fb923c;
+  --chart-4: #a78bfa;
+  --chart-5: #22d3ee;
+  --chart-6: #f43f5e;
+
+  --border: #27272a;
+  /* Zinc 800 */
+  --input: #27272a;
+  --input-background: #18181b;
+  --switch-background: #27272a;
+  --ring: #6366f1;
+
+  --sidebar: #18181b;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #6366f1;
+
+  /* Logo Colors - Dark Mode (lighter/brighter versions) */
+  --logo-teal: #14b8a6;
+  --logo-dark-green: #10b981;
+  --logo-green: #34d399;
+  --logo-darker-green: #10b981;
+  --logo-white: #ffffff;
+}
+
+/* Logo image filter for dark mode */
+.dark .logo-image {
+  filter: brightness(1.3) saturate(1.2) contrast(1.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* Custom Utilities */
+  --color-glass-border: var(--glass-border);
+  --color-glass-bg: var(--glass-bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground tracking-tightantialiased selection:bg-primary/20 selection:text-primary;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+    /* Clean modern font features if supported */
+  }
+}
+
+/**
+ * Base typography.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      /* SemiBold */
+      letter-spacing: -0.025em;
+      /* Tight tracking for headings */
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: 500;
+      /* Medium */
+      letter-spacing: -0.015em;
+      line-height: 1.4;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: 400;
+      line-height: 1.6;
+      /* Relaxed reading experience */
+      color: var(--muted-foreground);
+      /* Default to muted for paragraphs to reduce visual noise */
+    }
+
+    label {
+      font-size: var(--text-sm);
+      /* Smaller, tighter labels */
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--foreground);
+    }
+  }
+}
