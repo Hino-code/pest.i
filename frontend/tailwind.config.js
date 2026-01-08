@@ -11,7 +11,9 @@ export default {
       },
       colors: {
         border: "var(--border)",
+        border: "var(--border)",
         input: "var(--input)",
+        "input-background": "var(--input-background)",
         ring: "var(--ring)",
         background: "var(--background)",
         foreground: "var(--foreground)",

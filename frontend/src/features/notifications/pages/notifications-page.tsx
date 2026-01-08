@@ -152,19 +152,19 @@ export function Notifications() {
     switch (type) {
       case "alert":
         return (
-          <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+          <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
         );
       case "warning":
         return (
-          <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
         );
       case "success":
         return (
-          <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+          <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
         );
       case "info":
       default:
-        return <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />;
+        return <Info className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />;
     }
   };
 
@@ -187,60 +187,58 @@ export function Notifications() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800";
+        return "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-800";
       case "medium":
-        return "bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-800";
+        return "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800";
       case "low":
       default:
-        return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800";
+        return "bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800";
     }
   };
 
   // Get semantic styling based on notification type
-  // Light Mode: Clean, modern, minimal design - white cards with subtle gray borders and neutral text
-  // Dark Mode: Dark backgrounds with light text (KEEP AS IS)
   const getNotificationTypeStyles = (type: string) => {
     switch (type) {
       case "alert":
       case "critical":
         return {
-          background: "!bg-white dark:!bg-red-950/30",
-          border: "!border !border-gray-200 dark:border-red-800",
-          titleColor: "!text-gray-900 dark:text-red-100",
-          descriptionColor: "!text-gray-600 dark:text-red-200/80",
-          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-red-950/40",
+          background: "!bg-white dark:bg-rose-950/30",
+          border: "border-l-4 border-l-rose-500 border-y border-r border-gray-200 shadow-sm dark:shadow-none dark:border-rose-800 dark:border-l-rose-500",
+          titleColor: "text-gray-900 dark:text-rose-100",
+          descriptionColor: "text-gray-600 dark:text-rose-200/80",
+          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-rose-950/50",
         };
       case "warning":
         return {
-          background: "!bg-white dark:!bg-orange-950/30",
-          border: "!border !border-gray-200 dark:border-orange-800",
-          titleColor: "!text-gray-900 dark:text-orange-100",
-          descriptionColor: "!text-gray-600 dark:text-orange-200/80",
-          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-orange-950/40",
+          background: "!bg-white dark:bg-amber-950/30",
+          border: "border-l-4 border-l-amber-500 border-y border-r border-gray-200 shadow-sm dark:shadow-none dark:border-amber-800 dark:border-l-amber-500",
+          titleColor: "text-gray-900 dark:text-amber-100",
+          descriptionColor: "text-gray-600 dark:text-amber-200/80",
+          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-amber-950/50",
         };
       case "info":
         return {
-          background: "!bg-white dark:!bg-blue-950/30",
-          border: "!border !border-gray-200 dark:border-blue-800",
-          titleColor: "!text-gray-900 dark:text-blue-100",
-          descriptionColor: "!text-gray-600 dark:text-blue-200/80",
-          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-blue-950/40",
+          background: "!bg-white dark:bg-indigo-950/30",
+          border: "border-l-4 border-l-indigo-500 border-y border-r border-gray-200 shadow-sm dark:shadow-none dark:border-indigo-800 dark:border-l-indigo-500",
+          titleColor: "text-gray-900 dark:text-indigo-100",
+          descriptionColor: "text-gray-600 dark:text-indigo-200/80",
+          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-indigo-950/50",
         };
       case "success":
         return {
-          background: "!bg-white dark:!bg-emerald-950/30",
-          border: "!border !border-gray-200 dark:border-emerald-800",
-          titleColor: "!text-gray-900 dark:text-emerald-100",
-          descriptionColor: "!text-gray-600 dark:text-emerald-200/80",
-          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-emerald-950/40",
+          background: "!bg-white dark:bg-emerald-950/30",
+          border: "border-l-4 border-l-emerald-500 border-y border-r border-gray-200 shadow-sm dark:shadow-none dark:border-emerald-800 dark:border-l-emerald-500",
+          titleColor: "text-gray-900 dark:text-emerald-100",
+          descriptionColor: "text-gray-600 dark:text-emerald-200/80",
+          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-emerald-950/50",
         };
       default:
         return {
-          background: "!bg-white dark:bg-muted/50",
-          border: "!border !border-gray-200 dark:border-border",
-          titleColor: "!text-gray-900 dark:text-foreground",
-          descriptionColor: "!text-gray-600 dark:text-muted-foreground",
-          hoverBackground: "hover:!bg-gray-50/50 dark:hover:bg-muted",
+          background: "bg-white dark:bg-card/50",
+          border: "border-l-4 border-l-gray-300 border-y border-r border-gray-200 dark:border-border",
+          titleColor: "text-foreground dark:text-foreground",
+          descriptionColor: "text-muted-foreground dark:text-muted-foreground",
+          hoverBackground: "hover:bg-gray-50 dark:hover:bg-muted/30",
         };
     }
   };
@@ -314,7 +312,7 @@ export function Notifications() {
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-10 dark:bg-card/50 dark:border-border/50"
+              className="pl-10 pr-10 dark:border-border/50"
             />
             {searchQuery && (
               <Button
@@ -363,7 +361,7 @@ export function Notifications() {
                 <SelectItem value="success">Success</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={sortOption} onValueChange={(v) => setSortOption(v as SortOption)}>
+            <Select value={sortOption} onValueChange={(v: string) => setSortOption(v as SortOption)}>
               <SelectTrigger className="w-[180px]">
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="h-4 w-4" />

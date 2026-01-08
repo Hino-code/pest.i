@@ -591,7 +591,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                         e.target.value
                       )
                     }
-                    className="dark:bg-card/50 dark:border-border/50"
+                    className="dark:border-border/50"
                   />
                 </div>
 
@@ -603,7 +603,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     onChange={(e) =>
                       handleInputChange("profile", "jobTitle", e.target.value)
                     }
-                    className="dark:bg-card/50 dark:border-border/50"
+                    className="dark:border-border/50"
                   />
                 </div>
 
@@ -614,7 +614,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <Input
                       id="email"
                       type="email"
-                      className="pl-10 dark:bg-card/50 dark:border-border/50"
+                      className="pl-10 dark:border-border/50"
                       value={profileData.email}
                       disabled
                     />
@@ -627,7 +627,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="phone"
-                      className="pl-10 dark:bg-card/50 dark:border-border/50"
+                      className="pl-10 dark:border-border/50"
                       value={profileData.phone}
                       onChange={(e) =>
                         handleInputChange("profile", "phone", e.target.value)
@@ -642,7 +642,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="department"
-                      className="pl-10 dark:bg-card/50 dark:border-border/50"
+                      className="pl-10 dark:border-border/50"
                       value={profileData.department}
                       onChange={(e) =>
                         handleInputChange(
@@ -661,7 +661,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="location"
-                      className="pl-10 dark:bg-card/50 dark:border-border/50"
+                      className="pl-10 dark:border-border/50"
                       value={profileData.location}
                       onChange={(e) =>
                         handleInputChange("profile", "location", e.target.value)
@@ -681,7 +681,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                   onChange={(e) =>
                     handleInputChange("profile", "bio", e.target.value)
                   }
-                  className="dark:bg-card/50 dark:border-border/50"
+                  className="dark:border-border/50"
                 />
               </div>
 
@@ -733,8 +733,8 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 zIndex: 1050,
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
+                backgroundColor: 'var(--card)',
+                border: '1px solid var(--border)',
                 boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
               } as React.CSSProperties}
               onOpenAutoFocus={(e) => e.preventDefault()}

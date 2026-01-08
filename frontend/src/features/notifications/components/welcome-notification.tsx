@@ -106,9 +106,9 @@ export function WelcomeNotification({
         </AlertDescription>
       </Alert>
 
-      <Alert className="border-gray-200 bg-gray-50">
-        <Clock className="h-4 w-4 text-gray-600" />
-        <AlertDescription className="text-gray-700 text-xs">
+      <Alert className="border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950/30">
+        <Clock className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        <AlertDescription className="text-gray-700 dark:text-gray-300 text-xs">
           {getFormattedTime()}
         </AlertDescription>
       </Alert>
