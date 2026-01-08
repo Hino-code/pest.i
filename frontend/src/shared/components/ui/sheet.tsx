@@ -49,7 +49,10 @@ const SheetOverlay = React.forwardRef<
       "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 bg-black/50",
       className
     )}
-    style={{ zIndex: Z_INDEX.MODAL_BACKDROP }}
+    style={{ 
+      zIndex: Z_INDEX.MODAL_BACKDROP,
+      pointerEvents: "auto" // Allow overlay to receive clicks to close
+    }}
     {...props}
     ref={ref}
   />
@@ -78,7 +81,11 @@ const SheetContent = React.forwardRef<
           "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
         className
       )}
-      style={{ zIndex: Z_INDEX.MODAL, ...props.style }}
+      style={{ 
+        zIndex: Z_INDEX.MODAL + 1, // Ensure content is above overlay
+        pointerEvents: "auto", // Ensure content can receive pointer events
+        ...props.style 
+      }}
       {...props}
       ref={ref}
     >

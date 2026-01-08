@@ -470,11 +470,11 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-4xl mx-auto p-3 md:p-6 space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Profile Settings</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl md:text-2xl font-bold">Profile Settings</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Manage your account settings and preferences
           </p>
         </div>

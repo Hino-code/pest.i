@@ -849,7 +849,7 @@ export function Overview() {
   }, [forecasts, filters.pestType]);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6">
       <SharedFilters
         filters={filters}
         onFilterChange={handleFilterChange}
@@ -858,24 +858,24 @@ export function Overview() {
         showAdvanced
       />
       {error && (
-        <Card className="p-4 border-destructive/50 bg-destructive/5 text-destructive">
+        <Card className="p-3 md:p-4 border-destructive/50 bg-destructive/5 text-destructive text-sm md:text-base">
           <p>{error}</p>
         </Card>
       )}
       {loading && !contentReady ? (
         <DashboardSkeleton />
       ) : hasNoData ? (
-        <Card className="p-8 text-center border-border bg-background/50">
-          <p className="text-muted-foreground mb-2">No data available</p>
-          <p className="text-sm text-muted-foreground/70">
+        <Card className="p-6 md:p-8 text-center border-border bg-background/50">
+          <p className="text-muted-foreground mb-2 text-sm md:text-base">No data available</p>
+          <p className="text-xs md:text-sm text-muted-foreground/70">
             {error
               ? "There was an error loading the data. Please check the console for details."
               : "No observations match the current filters. Try adjusting your filter criteria."}
           </p>
         </Card>
       ) : (
-        <div className="space-y-6">
-          <div className="mb-6">
+        <div className="space-y-4 md:space-y-6">
+          <div className="mb-4 md:mb-6">
             <KpiCards kpis={kpis} insights={kpiData} />
           </div>
 
@@ -1240,9 +1240,9 @@ export function Overview() {
           </Card>
 
           {/* Mini-Visuals Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Threshold Status Breakdown */}
-            <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
+            <Card className="p-4 md:p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   Threshold Status
@@ -1313,7 +1313,7 @@ export function Overview() {
             </Card>
 
             {/* Action Tracker */}
-            <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
+            <Card className="p-4 md:p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   Action Tracker
@@ -1404,7 +1404,7 @@ export function Overview() {
             </Card>
 
             {/* Recent Alerts - Now Premium Styled */}
-            <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
+            <Card className="p-4 md:p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   Recent Alerts

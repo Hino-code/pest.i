@@ -203,22 +203,22 @@ export function Notifications() {
     selectedIds.size === filteredAndSortedNotifications.length;
 
   return (
-    <div className="p-6 space-y-6" aria-live="polite">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6" aria-live="polite">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <Bell className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">Notifications</h1>
+          <div className="flex items-center gap-2 md:gap-3">
+            <Bell className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+            <h1 className="text-xl md:text-2xl font-bold">Notifications</h1>
             {unreadCount > 0 && (
-              <Badge variant="destructive">{unreadCount} new</Badge>
+              <Badge variant="destructive" className="text-xs">{unreadCount} new</Badge>
             )}
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">
             Stay updated with pest alerts, forecasts, and system notifications
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {hasSelection ? (
             <>
               <Button
@@ -257,8 +257,8 @@ export function Notifications() {
       </div>
 
       {/* Search and Filters */}
-      <Card className="p-4 bg-card" role="region" aria-label="Notification filters">
-        <div className="space-y-4">
+      <Card className="p-3 md:p-4 bg-card" role="region" aria-label="Notification filters">
+        <div className="space-y-3 md:space-y-4">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -281,8 +281,8 @@ export function Notifications() {
           </div>
 
           {/* Filters Row */}
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 shrink-0">
               <Filter className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm font-medium">Filters:</span>
             </div>
@@ -290,7 +290,7 @@ export function Notifications() {
               value={localCategoryFilter}
               onValueChange={setLocalCategoryFilter}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -303,7 +303,7 @@ export function Notifications() {
               </SelectContent>
             </Select>
             <Select value={localTypeFilter} onValueChange={setLocalTypeFilter}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
@@ -316,7 +316,7 @@ export function Notifications() {
               </SelectContent>
             </Select>
             <Select value={sortOption} onValueChange={(v: string) => setSortOption(v as SortOption)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="h-4 w-4" />
                   <SelectValue placeholder="Sort by" />
@@ -378,7 +378,7 @@ export function Notifications() {
                   key={notification.id}
                   role="article"
                   aria-label={notification.title}
-                  className={`p-4 transition-all hover:shadow-md ${
+                  className={`p-3 md:p-4 transition-all hover:shadow-md ${
                     !notification.read
                       ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900"
                       : ""

@@ -51,9 +51,9 @@ export function Login({
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-[#f9fafb] font-sans tracking-normal">
+    <div className="flex min-h-screen items-center justify-center p-3 sm:p-4 bg-[#f9fafb] font-sans tracking-normal">
       {/* Main Card */}
-      <div className="bg-white relative rounded-[24px] shadow-xl w-full max-w-[1152px] h-[604px] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      <div className="bg-white relative rounded-[16px] md:rounded-[24px] shadow-xl w-full max-w-[1152px] min-h-[604px] md:h-[604px] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
         {/* ... Left Panel content remains same ... */}
         {/* Left Panel - Branding */}
         <div className="relative h-full w-full hidden md:block">
@@ -86,13 +86,13 @@ export function Login({
         </div>
 
         {/* Right Panel - Login Form */}
-        <div className="flex flex-col justify-center px-8 md:px-16 py-12 relative h-full">
+        <div className="flex flex-col justify-center px-4 sm:px-8 md:px-16 py-8 sm:py-12 relative h-full">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="font-semibold text-[#101828] text-[24px] mb-2">
+          <div className="text-center mb-6 md:mb-8">
+            <h1 className="font-semibold text-[#101828] text-xl md:text-[24px] mb-2">
               Welcome Back
             </h1>
-            <p className="text-[#4a5565] text-[16px]">
+            <p className="text-[#4a5565] text-sm md:text-[16px]">
               Sign in to access your pest monitoring dashboard
             </p>
           </div>

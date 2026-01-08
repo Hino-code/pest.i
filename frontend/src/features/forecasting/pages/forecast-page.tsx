@@ -639,10 +639,10 @@ export function ForecastEarlyWarning() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6">
       {/* Controls */}
-      <Card className="p-4">
-        <div className="flex flex-col md:flex-row gap-4">
+      <Card className="p-3 md:p-4">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           <div className="flex-1 space-y-2">
             <label className="text-sm text-muted-foreground">Pest Type</label>
             <Select

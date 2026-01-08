@@ -151,14 +151,14 @@ export function SharedFilters({
   return (
     <div className={compact ? "mb-4" : "mb-6"}>
       {/* Primary Filter Row - compact, closer to mock */}
-      <div className="flex items-center gap-3 flex-wrap rounded-md border border-border bg-card px-3 py-2 shadow-sm text-foreground">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 rounded-md border border-border bg-card px-2 sm:px-3 py-2 shadow-sm text-foreground">
         {/* Group 1: Primary Filters */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
           <Select
             value={filters.year.toString()}
             onValueChange={(val: string) => updateFilter("year", parseInt(val))}
           >
-            <SelectTrigger className="h-9 w-[110px]">
+            <SelectTrigger className="h-9 w-full sm:w-[110px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -182,7 +182,7 @@ export function SharedFilters({
               updateFilter("pestType", val as any)
             }
           >
-            <SelectTrigger className="h-9 w-[170px]">
+            <SelectTrigger className="h-9 w-full sm:w-[170px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -206,7 +206,7 @@ export function SharedFilters({
               value={filters.fieldStage}
               onValueChange={(val: string) => updateFilter("fieldStage", val)}
             >
-              <SelectTrigger className="h-9 w-[140px]">
+              <SelectTrigger className="h-9 w-full sm:w-[140px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -235,14 +235,14 @@ export function SharedFilters({
         </div>
 
         {/* Divider */}
-        <div className="h-6 w-px bg-border" />
+        <div className="hidden sm:block h-6 w-px bg-border" />
 
         {/* Group 2: Date Range */}
         <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="h-9 w-[220px] justify-start text-left font-normal"
+              className="h-9 w-full sm:w-[220px] justify-start text-left font-normal"
             >
               <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
               {filters.dateRange ? (

@@ -23,14 +23,14 @@ export const getCurrentChartColors = () => {
       chart4: "#8b5cf6",
       chart5: "#06b6d4",
       chart6: "#e11d48",
-      success: "#10b981",
-      warning: "#f59e0b",
+  success: "#10b981",
+  warning: "#f59e0b",
       destructive: "#e11d48",
-      info: "#3b82f6",
+  info: "#3b82f6",
       border: "#e4e4e7",
       background: "#fdfdfd",
-      card: "#ffffff",
-    };
+  card: "#ffffff",
+};
   }
 
   const isDark = document.documentElement.classList.contains("dark");

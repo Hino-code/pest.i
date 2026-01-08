@@ -181,6 +181,39 @@ function UserMenu({ user, onLogout, onProfileClick }: UserMenuProps) {
 
 const ACTIVE_SECTION_KEY = "pest-i-active-section";
 
+// Component to handle navigation with mobile sidebar closing
+function NavigationItem({
+  item,
+  activeSection,
+  onSectionChange,
+}: {
+  item: any;
+  activeSection: AppSection;
+  onSectionChange: (section: AppSection) => void;
+}) {
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleClick = () => {
+    onSectionChange(item.id);
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        onClick={handleClick}
+        isActive={activeSection === item.id}
+        className="w-full justify-start h-8 text-sm"
+      >
+        <item.icon className="h-4 w-4 opacity-70" />
+        <span>{item.title}</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
+
 export function AppLayout() {
   // Restore active section from localStorage or URL hash, default to "overview"
   // Only restore from localStorage if user is already authenticated (session restored)
@@ -398,16 +431,12 @@ export function AppLayout() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {dashboardItems.map((item) => (
-                      <SidebarMenuItem key={item.id}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveSection(item.id)}
-                          isActive={activeSection === item.id}
-                          className="w-full justify-start h-8 text-sm"
-                        >
-                          <item.icon className="h-4 w-4 opacity-70" />
-                          <span>{item.title}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                      <NavigationItem
+                        key={item.id}
+                        item={item}
+                        activeSection={activeSection}
+                        onSectionChange={setActiveSection}
+                      />
                     ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -422,16 +451,12 @@ export function AppLayout() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {analysisItems.map((item) => (
-                      <SidebarMenuItem key={item.id}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveSection(item.id)}
-                          isActive={activeSection === item.id}
-                          className="w-full justify-start h-8 text-sm"
-                        >
-                          <item.icon className="h-4 w-4 opacity-70" />
-                          <span>{item.title}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                      <NavigationItem
+                        key={item.id}
+                        item={item}
+                        activeSection={activeSection}
+                        onSectionChange={setActiveSection}
+                      />
                     ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -446,16 +471,12 @@ export function AppLayout() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {forecastItems.map((item) => (
-                      <SidebarMenuItem key={item.id}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveSection(item.id)}
-                          isActive={activeSection === item.id}
-                          className="w-full justify-start h-8 text-sm"
-                        >
-                          <item.icon className="h-4 w-4 opacity-70" />
-                          <span>{item.title}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                      <NavigationItem
+                        key={item.id}
+                        item={item}
+                        activeSection={activeSection}
+                        onSectionChange={setActiveSection}
+                      />
                     ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -470,16 +491,12 @@ export function AppLayout() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {systemItems.map((item) => (
-                      <SidebarMenuItem key={item.id}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveSection(item.id)}
-                          isActive={activeSection === item.id}
-                          className="w-full justify-start h-8 text-sm"
-                        >
-                          <item.icon className="h-4 w-4 opacity-70" />
-                          <span>{item.title}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                      <NavigationItem
+                        key={item.id}
+                        item={item}
+                        activeSection={activeSection}
+                        onSectionChange={setActiveSection}
+                      />
                     ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -494,26 +511,19 @@ export function AppLayout() {
             style={{ zIndex: Z_INDEX.STICKY }}
           >
             <div
-              className="flex items-center justify-between"
+              className="flex items-center justify-between px-3 md:px-6"
               style={{
                 height: "61px",
-                paddingLeft: "0px",
-                paddingRight: "24px",
               }}
             >
-              <div className="flex items-center gap-3" style={{ paddingLeft: "24px" }}>
+              <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
                 <SidebarTrigger aria-label="Toggle sidebar (⌘B or Ctrl+B)" />
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-base md:text-lg font-semibold truncate">
                   {getSectionTitle(activeSection)}
                 </h2>
               </div>
 
-              <div
-                className="flex items-center space-x-4"
-                style={{
-                  paddingRight: "24px",
-                }}
-              >
+              <div className="flex items-center gap-2 md:space-x-4 shrink-0">
                 <ThemeToggle />
                 <div className="flex items-center">
                   <NotificationBell
@@ -542,7 +552,7 @@ export function AppLayout() {
               </div>
             </div>
           </div>
-          <div className="px-4 pb-6">{content}</div>
+          <div className="px-3 md:px-4 pb-4 md:pb-6">{content}</div>
         </SidebarInset>
 
         {showWelcome && user && (

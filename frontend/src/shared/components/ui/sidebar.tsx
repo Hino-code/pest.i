@@ -217,15 +217,31 @@ function Sidebar({
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
               backgroundColor: "var(--sidebar)",
+              zIndex: Z_INDEX.MODAL + 1, // Ensure sidebar is above overlay
+              pointerEvents: "auto", // Ensure sidebar can receive pointer events
             } as React.CSSProperties
           }
           side={side}
+          onPointerDownOutside={(e) => {
+            // Prevent closing when clicking inside sidebar
+            const target = e.target as HTMLElement;
+            if (target.closest('[data-sidebar="sidebar"]')) {
+              e.preventDefault();
+            }
+          }}
+          onInteractOutside={(e) => {
+            // Prevent closing when interacting inside sidebar
+            const target = e.target as HTMLElement;
+            if (target.closest('[data-sidebar="sidebar"]')) {
+              e.preventDefault();
+            }
+          }}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div className="flex h-full w-full flex-col pointer-events-auto">{children}</div>
         </SheetContent>
       </Sheet>
     );
@@ -361,17 +377,21 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 }
 
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
-  const { state } = useSidebar();
+  const { state, isMobile } = useSidebar();
   
   // Calculate margin based on sidebar state
   // When collapsed (icon mode), use icon width; when expanded, use full width
   // With border-box, border is included in width, so margin matches width exactly
+  // On mobile, no margin needed (sidebar is in a sheet overlay)
   const marginLeft = React.useMemo(() => {
+    if (isMobile) {
+      return "0"; // No margin on mobile - sidebar is in sheet overlay
+    }
     if (state === "collapsed") {
       return SIDEBAR_WIDTH_ICON; // 3.5rem - border is included in this width
     }
     return SIDEBAR_WIDTH; // 16rem - border is included in this width
-  }, [state]);
+  }, [state, isMobile]);
   
   return (
     <main
@@ -388,8 +408,9 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
       style={{
         // Direct margin calculation - matches sidebar width + border exactly
         // No gap - content starts exactly where sidebar border ends
+        // On mobile: no margin (sidebar is overlay)
         marginLeft: marginLeft,
-        transition: "margin-left 200ms ease-linear",
+        transition: isMobile ? "none" : "margin-left 200ms ease-linear",
       } as React.CSSProperties}
       {...props}
     />
