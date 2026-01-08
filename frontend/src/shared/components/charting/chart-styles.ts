@@ -18,9 +18,21 @@ export const chartAxisStyle = {
 export const chartGridStyle = {
   strokeDasharray: '3 3',
   get stroke() {
+    // Use subtle gray for dark mode, border color for light mode
+    if (typeof window !== "undefined") {
+      const isDark = document.documentElement.classList.contains("dark");
+      return isDark ? "#334155" : getChartColors().border;
+    }
     return getChartColors().border;
   },
-  opacity: 0.5,
+  get opacity() {
+    // More subtle in dark mode
+    if (typeof window !== "undefined") {
+      const isDark = document.documentElement.classList.contains("dark");
+      return isDark ? 0.2 : 0.5;
+    }
+    return 0.5;
+  },
   vertical: false,
 };
 

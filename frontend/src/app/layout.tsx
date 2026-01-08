@@ -11,6 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
   SidebarHeader,
+  SidebarInset,
   useSidebar,
 } from "@/shared/components/ui/sidebar";
 import { Button } from "@/shared/components/ui/button";
@@ -59,7 +60,7 @@ function SidebarLogo() {
     <div
       className="border-b flex items-center justify-center transition-all duration-200 w-full"
       style={{
-        padding: isCollapsed ? "16px 8px" : "0px 29px",
+        padding: isCollapsed ? "16px 12px" : "0px 29px",
         height: "62px",
         minHeight: "62px",
       }}
@@ -487,7 +488,7 @@ export function AppLayout() {
           </SidebarContent>
         </Sidebar>
 
-        <main className="flex-1 overflow-auto">
+        <SidebarInset>
           <div
             className="sticky top-0 border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60"
             style={{ zIndex: Z_INDEX.STICKY }}
@@ -496,11 +497,11 @@ export function AppLayout() {
               className="flex items-center justify-between"
               style={{
                 height: "61px",
-                paddingLeft: "24px",
+                paddingLeft: "0px",
                 paddingRight: "24px",
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3" style={{ paddingLeft: "24px" }}>
                 <SidebarTrigger aria-label="Toggle sidebar (⌘B or Ctrl+B)" />
                 <h2 className="text-lg font-semibold">
                   {getSectionTitle(activeSection)}
@@ -510,10 +511,7 @@ export function AppLayout() {
               <div
                 className="flex items-center space-x-4"
                 style={{
-                  paddingLeft: "24px",
                   paddingRight: "24px",
-                  marginLeft: "14px",
-                  marginRight: "14px",
                 }}
               >
                 <ThemeToggle />
@@ -545,7 +543,7 @@ export function AppLayout() {
             </div>
           </div>
           <div className="px-4 pb-6">{content}</div>
-        </main>
+        </SidebarInset>
 
         {showWelcome && user && (
           <WelcomeNotification

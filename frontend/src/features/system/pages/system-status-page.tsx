@@ -485,11 +485,12 @@ export function SystemStatus() {
                       <XAxis dataKey="time" hide />
                       <Tooltip 
                         contentStyle={{ 
-                          backgroundColor: "rgba(255, 255, 255, 0.8)", 
+                          backgroundColor: "var(--card)", 
                           backdropFilter: "blur(8px)", 
                           border: "1px solid var(--border)",
                           borderRadius: "8px",
-                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                          color: "var(--foreground)"
                         }} 
                         itemStyle={{ color: "var(--foreground)", fontSize: "12px", fontWeight: 500 }}
                         labelStyle={{ display: "none" }}

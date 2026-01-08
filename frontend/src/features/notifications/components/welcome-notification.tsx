@@ -52,29 +52,29 @@ export function WelcomeNotification({
       className="fixed top-4 right-4 w-96 space-y-2"
       style={{ zIndex: Z_INDEX.NOTIFICATION }}
     >
-      <Card className="p-4 bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800">
+      <Card className="p-4 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-2">
-              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-              <h3 className="font-medium text-green-900 dark:text-green-400">
+              <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <h3 className="font-medium text-emerald-600 dark:text-emerald-400">
                 Welcome Back!
               </h3>
             </div>
-            <p className="text-sm text-green-800 dark:text-green-400 mb-3">
+            <p className="text-sm text-emerald-600/80 dark:text-emerald-400 mb-3">
               {getGreeting()}, {user.username}! You've successfully signed in to
               Pest.i.
             </p>
             <div className="flex items-center space-x-2 mb-2">
               <Badge
                 variant="outline"
-                className="text-green-700 border-green-300 dark:text-green-400 dark:border-green-700"
+                className="text-emerald-600 border-emerald-200 dark:text-emerald-400 dark:border-emerald-700"
               >
                 {user.role}
               </Badge>
               <Badge
                 variant="outline"
-                className="text-green-700 border-green-300 dark:text-green-400 dark:border-green-700"
+                className="text-emerald-600 border-emerald-200 dark:text-emerald-400 dark:border-emerald-700"
               >
                 System Online
               </Badge>
@@ -84,7 +84,7 @@ export function WelcomeNotification({
             variant="ghost"
             size="sm"
             onClick={onDismiss}
-            className="h-6 w-6 p-0 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+            className="h-6 w-6 p-0 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
           >
             <X className="h-4 w-4" />
           </Button>

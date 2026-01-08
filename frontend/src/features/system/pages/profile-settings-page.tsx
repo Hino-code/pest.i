@@ -591,6 +591,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                         e.target.value
                       )
                     }
+                    className="dark:bg-card/50 dark:border-border/50"
                   />
                 </div>
 
@@ -602,6 +603,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     onChange={(e) =>
                       handleInputChange("profile", "jobTitle", e.target.value)
                     }
+                    className="dark:bg-card/50 dark:border-border/50"
                   />
                 </div>
 
@@ -612,7 +614,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <Input
                       id="email"
                       type="email"
-                      className="pl-10"
+                      className="pl-10 dark:bg-card/50 dark:border-border/50"
                       value={profileData.email}
                       disabled
                     />
@@ -625,7 +627,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="phone"
-                      className="pl-10"
+                      className="pl-10 dark:bg-card/50 dark:border-border/50"
                       value={profileData.phone}
                       onChange={(e) =>
                         handleInputChange("profile", "phone", e.target.value)
@@ -640,7 +642,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="department"
-                      className="pl-10"
+                      className="pl-10 dark:bg-card/50 dark:border-border/50"
                       value={profileData.department}
                       onChange={(e) =>
                         handleInputChange(
@@ -659,7 +661,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="location"
-                      className="pl-10"
+                      className="pl-10 dark:bg-card/50 dark:border-border/50"
                       value={profileData.location}
                       onChange={(e) =>
                         handleInputChange("profile", "location", e.target.value)
@@ -679,6 +681,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                   onChange={(e) =>
                     handleInputChange("profile", "bio", e.target.value)
                   }
+                  className="dark:bg-card/50 dark:border-border/50"
                 />
               </div>
 
@@ -1128,7 +1131,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                       <Input
                         id="currentPassword"
                         type={showCurrentPassword ? "text" : "password"}
-                        className="pl-10 pr-10"
+                        className="pl-10 pr-10 dark:bg-card/50 dark:border-border/50"
                         value={securityData.currentPassword}
                         onChange={(e) =>
                           handleInputChange(
@@ -1163,7 +1166,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                       <Input
                         id="newPassword"
                         type={showNewPassword ? "text" : "password"}
-                        className="pl-10 pr-10"
+                        className="pl-10 pr-10 dark:bg-card/50 dark:border-border/50"
                         value={securityData.newPassword}
                         onChange={(e) =>
                           handleInputChange(
@@ -1196,7 +1199,7 @@ export function ProfileSettings({ user, onUpdateUser }: ProfileSettingsProps) {
                       <Input
                         id="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
-                        className="pl-10 pr-10"
+                        className="pl-10 pr-10 dark:bg-card/50 dark:border-border/50"
                         value={securityData.confirmPassword}
                         onChange={(e) =>
                           handleInputChange(

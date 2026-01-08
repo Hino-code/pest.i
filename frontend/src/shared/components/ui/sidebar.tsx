@@ -30,7 +30,7 @@ const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
-const SIDEBAR_WIDTH_ICON = "3rem";
+const SIDEBAR_WIDTH_ICON = "3.5rem"; // Narrower to match icon size (32px icon + padding = ~56px)
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 type SidebarContextProps = {
@@ -136,6 +136,8 @@ function SidebarProvider({
             {
               "--sidebar-width": SIDEBAR_WIDTH,
               "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+              // Dynamic margin for main content based on sidebar state
+              "--sidebar-content-margin": state === "expanded" ? SIDEBAR_WIDTH : SIDEBAR_WIDTH_ICON,
               ...style,
             } as React.CSSProperties
           }
@@ -173,7 +175,14 @@ function Sidebar({
       if (isHovered && state === "collapsed") {
         setOpen(true);
       } else if (!isHovered && state === "expanded") {
-        setOpen(false);
+        // Add a delay before collapsing to prevent flickering when moving mouse quickly
+        const timer = setTimeout(() => {
+          // Double-check we're still not hovered before collapsing
+          if (!isHovered) {
+            setOpen(false);
+          }
+        }, 200);
+        return () => clearTimeout(timer);
       }
     }
   }, [isHovered, state, setOpen, collapsible, isMobile]);
@@ -186,6 +195,9 @@ function Sidebar({
           "bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
           className
         )}
+        style={{
+          backgroundColor: "var(--sidebar)",
+        }}
         {...props}
       >
         {children}
@@ -204,6 +216,7 @@ function Sidebar({
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+              backgroundColor: "var(--sidebar)",
             } as React.CSSProperties
           }
           side={side}
@@ -229,38 +242,65 @@ function Sidebar({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* This is what handles the sidebar gap on desktop */}
+      {/* Gap div - always hidden when sidebar is in icon mode (fixed positioning) */}
       <div
         data-slot="sidebar-gap"
         className={cn(
-          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "relative bg-transparent transition-[width] duration-200 ease-linear shrink-0",
           "group-data-[collapsible=offcanvas]:w-0",
+          collapsible === "icon" && "hidden", // Always hide gap in icon mode (fixed positioning)
           "group-data-[side=right]:rotate-180",
           variant === "floating" || variant === "inset"
-            ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
+            ? "w-[var(--sidebar-width)]"
+            : "w-[var(--sidebar-width)]"
         )}
       />
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "fixed inset-y-0 hidden h-svh transition-[left,right,width] duration-200 ease-linear md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+          // Width transitions based on state - use actual width values
+          // Border is included in width with border-box, so width is exact
+          collapsible === "icon"
+            ? state === "collapsed"
+              ? "w-[var(--sidebar-width-icon)]"
+              : "w-[var(--sidebar-width)]"
+            : "w-[var(--sidebar-width)]",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
-            ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+            ? "p-2"
+            : "group-data-[side=left]:border-r group-data-[side=right]:border-l",
           className
         )}
-        style={{ zIndex: Z_INDEX.FIXED, ...(props.style || {}) }}
+        style={{ 
+          zIndex: Z_INDEX.FIXED + 10, // Higher z-index to float over content
+          boxSizing: "border-box", // Ensure border is included in width
+          // Update CSS variable for content margin to match current width exactly
+          "--sidebar-content-margin": collapsible === "icon" && state === "collapsed" 
+            ? SIDEBAR_WIDTH_ICON 
+            : SIDEBAR_WIDTH,
+          ...(props.style || {}) 
+        } as React.CSSProperties & { "--sidebar-content-margin"?: string }}
         {...props}
       >
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+          className={cn(
+            "bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm",
+            // Add shadow when expanded in icon mode to show it's floating
+            collapsible === "icon" && state === "expanded" && "shadow-lg"
+          )}
+          style={{
+            backgroundColor: "var(--sidebar)",
+            // Ensure solid, opaque background
+            opacity: 1,
+            // Ensure border-box so border is included in width
+            boxSizing: "border-box",
+          }}
         >
           {children}
         </div>
@@ -321,14 +361,36 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 }
 
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
+  const { state } = useSidebar();
+  
+  // Calculate margin based on sidebar state
+  // When collapsed (icon mode), use icon width; when expanded, use full width
+  // With border-box, border is included in width, so margin matches width exactly
+  const marginLeft = React.useMemo(() => {
+    if (state === "collapsed") {
+      return SIDEBAR_WIDTH_ICON; // 3.5rem - border is included in this width
+    }
+    return SIDEBAR_WIDTH; // 16rem - border is included in this width
+  }, [state]);
+  
   return (
     <main
       data-slot="sidebar-inset"
       className={cn(
         "bg-background relative flex w-full flex-1 flex-col",
-        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
+        "md:transition-[margin-left] md:duration-200 md:ease-linear",
+        // For non-icon mode (offcanvas), no margin needed
+        "md:peer-data-[collapsible=offcanvas]~&:ml-0",
+        // For inset variant, adjust margins
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
         className
       )}
+      style={{
+        // Direct margin calculation - matches sidebar width + border exactly
+        // No gap - content starts exactly where sidebar border ends
+        marginLeft: marginLeft,
+        transition: "margin-left 200ms ease-linear",
+      } as React.CSSProperties}
       {...props}
     />
   );
@@ -490,7 +552,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! group-data-[collapsible=icon]:[&>span]:hidden [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {

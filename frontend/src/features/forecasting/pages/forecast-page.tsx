@@ -56,6 +56,27 @@ export function ForecastEarlyWarning() {
     useState<"Black Rice Bug">("Black Rice Bug");
   const [forecastDays, setForecastDays] = useState(7);
   const chartColors = useChartColors();
+  
+  // Detect dark mode for chart styling (reactive to theme changes)
+  const [isDark, setIsDark] = useState(() => 
+    typeof window !== "undefined" && document.documentElement.classList.contains("dark")
+  );
+  
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    
+    // Check on mount and when theme changes
+    checkTheme();
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   // Get data from store (100% backend data)
   const forecasts = useDashboardStore((state) => state.forecasts);
@@ -706,7 +727,7 @@ export function ForecastEarlyWarning() {
                 {riskMetrics.riskLevel}
               </Badge>
             </div>
-            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
               <WarningTriangle className="h-5 w-5" />
             </div>
           </div>
@@ -725,8 +746,8 @@ export function ForecastEarlyWarning() {
                 Next {forecastDays} days
               </p>
             </div>
-            <div className="h-8 w-8 rounded-full bg-destructive/10 flex items-center justify-center">
-              <Timer className="h-4 w-4 text-destructive" />
+            <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
+              <Timer className="h-5 w-5" />
             </div>
           </div>
         </Card>
@@ -742,8 +763,8 @@ export function ForecastEarlyWarning() {
                 &gt;150% threshold
               </p>
             </div>
-            <div className="h-8 w-8 rounded-full bg-chart-3/10 flex items-center justify-center">
-              <Flash className="h-4 w-4 text-chart-3" />
+            <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
+              <Flash className="h-5 w-5" />
             </div>
           </div>
         </Card>
@@ -757,7 +778,7 @@ export function ForecastEarlyWarning() {
               </p>
               <p className="text-xs text-muted-foreground">Pest count</p>
             </div>
-            <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
               <GraphUp className="h-5 w-5" />
             </div>
           </div>
@@ -774,8 +795,8 @@ export function ForecastEarlyWarning() {
                 Count: {riskMetrics.peakDay?.count?.toFixed(1) || "0.0"}
               </p>
             </div>
-            <div className="h-8 w-8 rounded-full bg-chart-4/10 flex items-center justify-center">
-              <Calendar className="h-4 w-4 text-chart-4" />
+            <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
+              <Calendar className="h-5 w-5" />
             </div>
           </div>
         </Card>
@@ -787,8 +808,8 @@ export function ForecastEarlyWarning() {
               <p className="text-2xl font-semibold">{riskMetrics.threshold}</p>
               <p className="text-xs text-muted-foreground">Economic limit</p>
             </div>
-            <div className="h-8 w-8 rounded-full bg-success/10 flex items-center justify-center">
-              <Brain className="h-4 w-4 text-success" />
+            <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
+              <Brain className="h-5 w-5" />
             </div>
           </div>
         </Card>
@@ -944,16 +965,16 @@ export function ForecastEarlyWarning() {
                 >
                   <stop
                     offset="0%"
-                    stopColor="rgba(37, 99, 235, 0.03)"
+                    stopColor={isDark ? "rgba(34, 211, 238, 0.03)" : "rgba(37, 99, 235, 0.03)"}
                     stopOpacity={1}
                   />
                   <stop
                     offset="100%"
-                    stopColor="rgba(37, 99, 235, 0.08)"
+                    stopColor={isDark ? "rgba(34, 211, 238, 0.08)" : "rgba(37, 99, 235, 0.08)"}
                     stopOpacity={1}
                   />
                 </linearGradient>
-                {/* Historical Data Gradient - Slate Gray */}
+                {/* Historical Data Gradient - Dimmed in dark mode */}
                 <linearGradient
                   id="historicalMainGradient"
                   x1="0"
@@ -961,10 +982,10 @@ export function ForecastEarlyWarning() {
                   x2="0"
                   y2="1"
                 >
-                  <stop offset="5%" stopColor="#64748B" stopOpacity={0.1} />
+                  <stop offset="5%" stopColor="#64748B" stopOpacity={isDark ? 0.05 : 0.1} />
                   <stop offset="95%" stopColor="#64748B" stopOpacity={0} />
                 </linearGradient>
-                {/* Forecast Gradient - Royal Blue */}
+                {/* Forecast Gradient - Neon Cyan for dark mode, Royal Blue for light */}
                 <linearGradient
                   id="forecastMainGradient"
                   x1="0"
@@ -972,27 +993,38 @@ export function ForecastEarlyWarning() {
                   x2="0"
                   y2="1"
                 >
-                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                  <stop offset="5%" stopColor={isDark ? "#22d3ee" : "#2563EB"} stopOpacity={isDark ? 0.08 : 0.15} />
+                  <stop offset="95%" stopColor={isDark ? "#22d3ee" : "#2563EB"} stopOpacity={0} />
+                </linearGradient>
+                {/* Confidence Interval Gradient - Very subtle in dark mode (5-8% opacity) */}
+                <linearGradient
+                  id="confidenceIntervalGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stopColor={isDark ? "#22d3ee" : "#2563EB"} stopOpacity={isDark ? 0.08 : 0.08} />
+                  <stop offset="100%" stopColor={isDark ? "#22d3ee" : "#2563EB"} stopOpacity={0} />
                 </linearGradient>
               </defs>
 
-              {/* Risk Zones - Scientific Agri-Tech Palette */}
-              {/* Safe Zone: Soft Emerald (below threshold) */}
+              {/* Risk Zones - Adjusted for dark mode */}
+              {/* Safe Zone: Soft Emerald (below threshold) - Darker in dark mode */}
               <ReferenceArea
                 y1={referenceLines.operationalBaseline}
                 y2={referenceLines.economicThreshold}
-                fill="#D1FAE5"
-                fillOpacity={0.4}
+                fill={isDark ? "#064e3b" : "#D1FAE5"}
+                fillOpacity={isDark ? 0.15 : 0.4}
                 stroke="none"
               />
 
-              {/* Danger Zone: Soft Rose (above threshold) */}
+              {/* Danger Zone: Soft Rose (above threshold) - Darker in dark mode */}
               <ReferenceArea
                 y1={referenceLines.economicThreshold}
                 y2={yAxisDomain[1]}
-                fill="#FEE2E2"
-                fillOpacity={0.4}
+                fill={isDark ? "#7f1d1d" : "#FEE2E2"}
+                fillOpacity={isDark ? 0.15 : 0.4}
                 stroke="none"
               />
               <CartesianGrid {...chartGridStyle} />
@@ -1028,66 +1060,67 @@ export function ForecastEarlyWarning() {
                 tooltipType="none"
                 isAnimationActive={false}
               />
-              {/* Confidence Band - Subtle Royal Blue tint */}
+              {/* Confidence Band - Neon Cyan for dark mode, Royal Blue for light */}
+              {/* In dark mode: Very subtle (5-8% opacity) to avoid heavy blocks */}
               <Area
                 type="monotone"
                 dataKey="confidenceBandHeight"
                 stackId="cb"
                 stroke="none"
-                fill="#2563EB"
-                fillOpacity={0.08}
+                fill="url(#confidenceIntervalGradient)"
+                fillOpacity={isDark ? 0.08 : 0.08}
                 name="95% Confidence Interval"
                 connectNulls={false}
                 isAnimationActive={false}
               />
 
-              {/* Historical Data - Slate Gray (recedes visually) */}
+              {/* Historical Data - Dimmed Blue-Gray in dark mode (past data, pushed back visually) */}
               <Area
                 type="monotone"
                 dataKey="actual"
-                stroke="#64748B"
+                stroke={isDark ? "#64748b" : "#64748B"}
                 strokeWidth={2}
                 fill="url(#historicalMainGradient)"
                 name="Historical Data"
                 connectNulls={false}
                 activeDot={{ r: 4, strokeWidth: 2 }}
               />
-              {/* XGBoost Forecast - Royal Blue (the star prediction) */}
+              {/* XGBoost Forecast - Bright Neon Cyan in dark mode, Royal Blue for light */}
               <Area
                 type="monotone"
                 dataKey="predicted"
-                stroke="#2563EB"
+                stroke={isDark ? "#22d3ee" : "#2563EB"}
                 strokeWidth={3}
                 fill="url(#forecastMainGradient)"
-                dot={{ r: 4, fill: "#2563EB", strokeWidth: 2, stroke: "#fff" }}
+                dot={{ r: 4, fill: isDark ? "#22d3ee" : "#2563EB", strokeWidth: 2, stroke: chartColors.card }}
                 activeDot={{ r: 6, strokeWidth: 0 }}
                 name="AI Forecast (XGBoost)"
                 connectNulls={false}
               />
 
-              {/* Critical Threshold - Alarm Red (the warning barrier) */}
+              {/* Critical Threshold - Neon Pink/Coral for dark mode (high contrast), Alarm Red for light */}
               <ReferenceLine
                 y={referenceLines.economicThreshold}
-                stroke="#DC2626"
-                strokeDasharray="4 4"
+                stroke={isDark ? "#fb7185" : "#DC2626"}
+                strokeDasharray="5 5"
                 strokeWidth={2}
                 label={{
                   value: "CRITICAL THRESHOLD",
                   position: "top",
-                  fill: "#DC2626",
+                  fill: isDark ? "#fb7185" : "#DC2626",
                   fontSize: 14,
                   fontWeight: "bold",
                 }}
               />
               <ReferenceLine
                 y={referenceLines.economicInjuryLevel}
-                stroke={chartColors.destructive}
-                strokeDasharray="4 4"
+                stroke={isDark ? "#fb7185" : chartColors.destructive}
+                strokeDasharray="5 5"
                 strokeWidth={1.5}
                 label={{
                   value: "Economic Injury Level",
                   position: "insideTopRight",
-                  fill: chartColors.destructive,
+                  fill: isDark ? "#fb7185" : chartColors.destructive,
                   fontSize: 10,
                   fontWeight: 600,
                   dy: -10,

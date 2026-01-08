@@ -196,6 +196,55 @@ export function Notifications() {
     }
   };
 
+  // Get semantic styling based on notification type
+  // Light Mode: Clean, modern, minimal design - white cards with subtle gray borders and neutral text
+  // Dark Mode: Dark backgrounds with light text (KEEP AS IS)
+  const getNotificationTypeStyles = (type: string) => {
+    switch (type) {
+      case "alert":
+      case "critical":
+        return {
+          background: "!bg-white dark:!bg-red-950/30",
+          border: "!border !border-gray-200 dark:border-red-800",
+          titleColor: "!text-gray-900 dark:text-red-100",
+          descriptionColor: "!text-gray-600 dark:text-red-200/80",
+          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-red-950/40",
+        };
+      case "warning":
+        return {
+          background: "!bg-white dark:!bg-orange-950/30",
+          border: "!border !border-gray-200 dark:border-orange-800",
+          titleColor: "!text-gray-900 dark:text-orange-100",
+          descriptionColor: "!text-gray-600 dark:text-orange-200/80",
+          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-orange-950/40",
+        };
+      case "info":
+        return {
+          background: "!bg-white dark:!bg-blue-950/30",
+          border: "!border !border-gray-200 dark:border-blue-800",
+          titleColor: "!text-gray-900 dark:text-blue-100",
+          descriptionColor: "!text-gray-600 dark:text-blue-200/80",
+          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-blue-950/40",
+        };
+      case "success":
+        return {
+          background: "!bg-white dark:!bg-emerald-950/30",
+          border: "!border !border-gray-200 dark:border-emerald-800",
+          titleColor: "!text-gray-900 dark:text-emerald-100",
+          descriptionColor: "!text-gray-600 dark:text-emerald-200/80",
+          hoverBackground: "hover:!bg-gray-50/50 dark:hover:!bg-emerald-950/40",
+        };
+      default:
+        return {
+          background: "!bg-white dark:bg-muted/50",
+          border: "!border !border-gray-200 dark:border-border",
+          titleColor: "!text-gray-900 dark:text-foreground",
+          descriptionColor: "!text-gray-600 dark:text-muted-foreground",
+          hoverBackground: "hover:!bg-gray-50/50 dark:hover:bg-muted",
+        };
+    }
+  };
+
   const hasSelection = selectedIds.size > 0;
   const allSelected =
     filteredAndSortedNotifications.length > 0 &&
@@ -256,7 +305,7 @@ export function Notifications() {
       </div>
 
       {/* Search and Filters */}
-      <Card className="p-4" role="region" aria-label="Notification filters">
+      <Card className="p-4 bg-card" role="region" aria-label="Notification filters">
         <div className="space-y-4">
           {/* Search */}
           <div className="relative">
@@ -265,7 +314,7 @@ export function Notifications() {
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-10"
+              className="pl-10 pr-10 dark:bg-card/50 dark:border-border/50"
             />
             {searchQuery && (
               <Button
@@ -372,16 +421,15 @@ export function Notifications() {
 
             {filteredAndSortedNotifications.map((notification) => {
               const isSelected = selectedIds.has(notification.id);
+              const typeStyles = getNotificationTypeStyles(notification.type);
               return (
                 <Card
                   key={notification.id}
                   role="article"
                   aria-label={notification.title}
-                  className={`p-4 transition-all hover:shadow-md ${
-                    !notification.read
-                      ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900"
-                      : ""
-                  } ${isSelected ? "ring-2 ring-primary" : ""}`}
+                  className={`p-4 transition-all border ${typeStyles.background} ${typeStyles.border} ${typeStyles.hoverBackground} ${
+                    isSelected ? "ring-2 ring-primary" : ""
+                  }`}
                 >
                   <div className="flex gap-4">
                     {/* Checkbox */}
@@ -404,11 +452,7 @@ export function Notifications() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h3
-                              className={`font-semibold ${
-                                !notification.read
-                                  ? "text-foreground"
-                                  : "text-muted-foreground"
-                              }`}
+                              className={`font-semibold ${typeStyles.titleColor}`}
                             >
                               {notification.title}
                             </h3>
@@ -429,7 +473,7 @@ export function Notifications() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className={`text-sm mt-1 ${typeStyles.descriptionColor}`}>
                             {notification.message}
                           </p>
                         </div>

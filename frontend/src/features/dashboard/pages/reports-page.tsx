@@ -606,8 +606,12 @@ export function Reports() {
           }
 
           try {
+            // Get background color from CSS variable
+            const bgColor = getComputedStyle(document.documentElement)
+              .getPropertyValue("--card")
+              .trim() || "#ffffff";
             const canvas = await html2canvas(chartElement as HTMLElement, {
-              backgroundColor: "#ffffff",
+              backgroundColor: bgColor,
               scale: 2,
               logging: false,
             });
@@ -678,8 +682,12 @@ export function Reports() {
       pdf.text(chartTitle, pageWidth / 2, 45, { align: "center" });
 
       // Convert chart to image
+      // Get background color from CSS variable
+      const bgColor = getComputedStyle(document.documentElement)
+        .getPropertyValue("--card")
+        .trim() || "#ffffff";
       const canvas = await html2canvas(chartElement as HTMLElement, {
-        backgroundColor: "#ffffff",
+        backgroundColor: bgColor,
         scale: 2,
         logging: false,
       });
@@ -1078,12 +1086,12 @@ export function Reports() {
                       >
                         <stop
                           offset="0%"
-                          stopColor={chartColors.chart3}
+                          stopColor="#3b82f6"
                           stopOpacity={0.2}
                         />
                         <stop
                           offset="100%"
-                          stopColor={chartColors.chart3}
+                          stopColor="#3b82f6"
                           stopOpacity={0}
                         />
                       </linearGradient>
@@ -1119,12 +1127,13 @@ export function Reports() {
                         <Area
                           type="monotone"
                           dataKey="blackRiceBug"
-                          stroke={chartColors.chart3}
+                          stroke="#3b82f6"
                           strokeWidth={2}
                           fill="url(#pestTrendGradient)"
                           name="Black Rice Bug"
                           activeDot={{
                             r: 4,
+                            fill: "#3b82f6",
                             strokeWidth: 2,
                             stroke: chartColors.background,
                           }}
@@ -1185,7 +1194,7 @@ export function Reports() {
                         />
                         <Bar
                           dataKey="totalDamage"
-                          fill={chartColors.chart3}
+                          fill="#f59e0b"
                           name="Total Damage %"
                           radius={[4, 4, 0, 0]}
                           fillOpacity={0.9}

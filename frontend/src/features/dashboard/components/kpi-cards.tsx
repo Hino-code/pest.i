@@ -124,9 +124,9 @@ function KpiCard({
           <span className="text-sm font-medium text-muted-foreground tracking-wide">
             {title}
           </span>
-          {/* Icon - Uniform Design (Primary Color) */}
+          {/* Icon - Uniform Design (Primary Color) - Matching high risk days style */}
           <div className="p-2 rounded-lg bg-primary/10 text-primary transition-colors duration-300">
-            <Icon className="h-5 w-5" strokeWidth={2} />
+            <Icon className="h-5 w-5" />
           </div>
         </div>
 

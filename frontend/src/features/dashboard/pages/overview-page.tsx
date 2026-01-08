@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Card } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { SharedFilters } from "@/shared/components/filters/shared-filters";
@@ -74,6 +74,27 @@ export function Overview() {
   const error = useDashboardStore((state) => state.error);
   const allForecasts = useDashboardStore((state) => state.forecasts);
   const chartColors = useChartColors();
+  
+  // Detect dark mode for chart styling (reactive to theme changes)
+  const [isDark, setIsDark] = useState(() => 
+    typeof window !== "undefined" && document.documentElement.classList.contains("dark")
+  );
+  
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    
+    // Check on mount and when theme changes
+    checkTheme();
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   // Custom dot component for threshold-aware highlighting
   const ThresholdAwareDot = useMemo(() => {
@@ -858,7 +879,7 @@ export function Overview() {
             <KpiCards kpis={kpis} insights={kpiData} />
           </div>
 
-          <Card className="p-6 relative overflow-hidden border border-border bg-white shadow-sm rounded-xl">
+          <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
             <div className="flex flex-col space-y-6 pt-2">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div>
@@ -950,7 +971,9 @@ export function Overview() {
                   <span className="text-muted-foreground">
                     Peak:{" "}
                     <span className="text-foreground font-bold tracking-tight ml-1">
-                      {peakForecast.peak}
+                      {typeof peakForecast.peak === 'number' 
+                        ? peakForecast.peak.toFixed(2) 
+                        : peakForecast.peak}
                     </span>
                   </span>
                 </div>
@@ -983,12 +1006,12 @@ export function Overview() {
                       >
                         <stop
                           offset="0%"
-                          stopColor="rgba(139, 92, 246, 0.03)"
+                          stopColor={isDark ? "rgba(34, 211, 238, 0.03)" : "rgba(37, 99, 235, 0.03)"}
                           stopOpacity={1}
                         />
                         <stop
                           offset="100%"
-                          stopColor="rgba(139, 92, 246, 0.08)"
+                          stopColor={isDark ? "rgba(34, 211, 238, 0.08)" : "rgba(37, 99, 235, 0.08)"}
                           stopOpacity={1}
                         />
                       </linearGradient>
@@ -1001,12 +1024,12 @@ export function Overview() {
                       >
                         <stop
                           offset="5%"
-                          stopColor="#2563EB"
-                          stopOpacity={0.15}
+                          stopColor={isDark ? "#22d3ee" : "#2563EB"}
+                          stopOpacity={isDark ? 0.08 : 0.15}
                         />
                         <stop
                           offset="95%"
-                          stopColor="#2563EB"
+                          stopColor={isDark ? "#22d3ee" : "#2563EB"}
                           stopOpacity={0}
                         />
                       </linearGradient>
@@ -1020,7 +1043,7 @@ export function Overview() {
                         <stop
                           offset="5%"
                           stopColor="#64748B"
-                          stopOpacity={0.1}
+                          stopOpacity={isDark ? 0.05 : 0.1}
                         />
                         <stop
                           offset="95%"
@@ -1028,31 +1051,42 @@ export function Overview() {
                           stopOpacity={0}
                         />
                       </linearGradient>
+                      {/* Confidence Interval Gradient - Very subtle in dark mode */}
+                      <linearGradient
+                        id="confidenceIntervalGradient"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop offset="0%" stopColor={isDark ? "#22d3ee" : "#2563EB"} stopOpacity={isDark ? 0.08 : 0.08} />
+                        <stop offset="100%" stopColor={isDark ? "#22d3ee" : "#2563EB"} stopOpacity={0} />
+                      </linearGradient>
                     </defs>
 
-                    {/* Risk Zones - Scientific Agri-Tech Palette */}
-                    {/* Safe Zone: Soft Emerald (below threshold) */}
+                    {/* Risk Zones - Adjusted for dark mode */}
+                    {/* Safe Zone: Soft Emerald (below threshold) - Darker in dark mode */}
                     <ReferenceArea
                       y1={operationalBaseline}
                       y2={economicThreshold}
-                      fill="#D1FAE5"
-                      fillOpacity={0.4}
+                      fill={isDark ? "#064e3b" : "#D1FAE5"}
+                      fillOpacity={isDark ? 0.15 : 0.4}
                       stroke="none"
                     />
-                    {/* Danger Zone: Soft Rose (above threshold) */}
+                    {/* Danger Zone: Soft Rose (above threshold) - Darker in dark mode */}
                     <ReferenceArea
                       y1={economicThreshold}
                       y2={yAxisDomain[1]}
-                      fill="#FEE2E2"
-                      fillOpacity={0.4}
+                      fill={isDark ? "#7f1d1d" : "#FEE2E2"}
+                      fillOpacity={isDark ? 0.15 : 0.4}
                       stroke="none"
                     />
 
                     <CartesianGrid
                       vertical={false}
                       strokeDasharray="3 3"
-                      stroke={chartColors.border}
-                      opacity={0.4}
+                      stroke={isDark ? "#334155" : chartColors.border}
+                      opacity={isDark ? 0.2 : 0.4}
                     />
 
                     <XAxis
@@ -1093,16 +1127,16 @@ export function Overview() {
                       }}
                     />
 
-                    {/* Critical Threshold - Alarm Red (the warning barrier) */}
+                    {/* Critical Threshold - Neon Pink/Coral for dark mode (high contrast), Alarm Red for light */}
                     <ReferenceLine
                       y={economicThreshold}
-                      stroke="#DC2626"
+                      stroke={isDark ? "#fb7185" : "#DC2626"}
                       strokeDasharray="4 4"
                       strokeWidth={2}
                       label={{
                         value: "CRITICAL THRESHOLD",
                         position: "top",
-                        fill: "#DC2626",
+                        fill: isDark ? "#fb7185" : "#DC2626",
                         fontSize: 14,
                         fontWeight: "bold",
                       }}
@@ -1138,18 +1172,18 @@ export function Overview() {
                       </>
                     )}
 
-                    {/* Historical Data - Slate Gray (recedes visually) */}
+                    {/* Historical Data - Dimmed Blue-Gray in dark mode (past data, pushed back visually) */}
                     <Area
                       type="monotone"
                       dataKey="actual"
-                      stroke="#64748B"
+                      stroke={isDark ? "#64748b" : "#64748B"}
                       strokeWidth={2}
                       fill="url(#historicalGradient)"
                       dot={{
                         r: 4,
-                        fill: "#64748B",
+                        fill: isDark ? "#64748b" : "#64748B",
                         strokeWidth: 2,
-                        stroke: "#fff",
+                        stroke: chartColors.card,
                       }}
                       activeDot={{ r: 4, strokeWidth: 2 }}
                       name="Historical Data"
@@ -1157,7 +1191,7 @@ export function Overview() {
                       isAnimationActive={false}
                     />
 
-                    {/* Confidence Band - Subtle Royal Blue tint */}
+                    {/* Confidence Band - Very subtle in dark mode (5-8% opacity) */}
                     <Area
                       type="monotone"
                       dataKey="confidenceLower"
@@ -1171,24 +1205,24 @@ export function Overview() {
                       dataKey="confidenceBandHeight"
                       stackId="confidence"
                       stroke="none"
-                      fill="#2563EB"
-                      fillOpacity={0.08}
+                      fill="url(#confidenceIntervalGradient)"
+                      fillOpacity={isDark ? 0.08 : 0.08}
                       name="Confidence Range"
                       connectNulls={false}
                     />
 
-                    {/* XGBoost Forecast - Royal Blue (the star prediction) */}
+                    {/* XGBoost Forecast - Bright Neon Cyan in dark mode, Royal Blue for light */}
                     <Area
                       type="monotone"
                       dataKey="predicted"
-                      stroke="#2563EB"
+                      stroke={isDark ? "#22d3ee" : "#2563EB"}
                       strokeWidth={3}
                       fill="url(#forecastGradient)"
                       dot={{
                         r: 4,
-                        fill: "#2563EB",
+                        fill: isDark ? "#22d3ee" : "#2563EB",
                         strokeWidth: 2,
-                        stroke: "#fff",
+                        stroke: chartColors.card,
                       }}
                       activeDot={{ r: 6, strokeWidth: 0 }}
                       name="AI Forecast (XGBoost)"
@@ -1208,7 +1242,7 @@ export function Overview() {
           {/* Mini-Visuals Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Threshold Status Breakdown */}
-            <Card className="p-6 relative overflow-hidden border border-border bg-white shadow-sm rounded-xl">
+            <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   Threshold Status
@@ -1279,7 +1313,7 @@ export function Overview() {
             </Card>
 
             {/* Action Tracker */}
-            <Card className="p-6 relative overflow-hidden border border-border bg-white shadow-sm rounded-xl">
+            <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   Action Tracker
@@ -1370,7 +1404,7 @@ export function Overview() {
             </Card>
 
             {/* Recent Alerts - Now Premium Styled */}
-            <Card className="p-6 relative overflow-hidden border border-border bg-white shadow-sm rounded-xl">
+            <Card className="p-6 relative overflow-hidden border border-border bg-card shadow-sm rounded-xl">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   Recent Alerts
