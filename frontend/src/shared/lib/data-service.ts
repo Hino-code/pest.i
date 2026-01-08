@@ -23,21 +23,53 @@ export const filterObservations = (
 ): PestObservation[] => {
   const initialCount = observations.length;
   const filtered = observations.filter(obs => {
-    const obsDate = new Date(obs.date);
+    // Parse observation date - handle both string and Date objects
+    // Normalize to local date (ignore time component) for consistent comparison
+    let obsDate: Date;
+    if (typeof obs.date === 'string') {
+      // Parse date string and normalize to start of day in local timezone
+      obsDate = new Date(obs.date);
+      // If the date string is in YYYY-MM-DD format, it might be parsed as UTC
+      // Normalize to local timezone by creating a new date from the date components
+      if (obs.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = obs.date.split('-').map(Number);
+        obsDate = new Date(year, month - 1, day);
+      }
+    } else {
+      obsDate = new Date(obs.date);
+    }
+    
+    // Normalize observation date to start of day in local timezone for consistent comparison
+    const obsDateNormalized = new Date(obsDate.getFullYear(), obsDate.getMonth(), obsDate.getDate());
+    const obsTime = obsDateNormalized.getTime();
+    
+    // Normalize observation date to start of day for year comparison
+    const obsYear = obsDateNormalized.getFullYear();
 
-    if (filters.year && obsDate.getFullYear() !== filters.year) return false;
+    // Year filter: only apply if no date range is selected (date range is more specific)
+    // If a date range is selected, it overrides the year filter
+    if (!filters.dateRange && filters.year && obsYear !== filters.year) return false;
     if (filters.season && filters.season !== 'All' && obs.season !== filters.season) return false;
     if (filters.fieldStage && filters.fieldStage !== 'All' && obs.fieldStage !== filters.fieldStage) return false;
     if (filters.pestType && filters.pestType !== 'All' && obs.pestType !== filters.pestType) return false;
 
     if (filters.dateRange) {
-      // Compare dates directly - end date is already set to end of day (23:59:59.999)
-      // and start date is set to beginning of day (00:00:00) in applyDateRange
-      const obsTime = obsDate.getTime();
-      const startTime = filters.dateRange.start.getTime();
-      const endTime = filters.dateRange.end.getTime();
+      // Normalize filter dates to start/end of day in local timezone
+      // The filter dates are already set to start/end of day in applyDateRange,
+      // but we normalize them here to ensure consistency with observation dates
+      const startDate = new Date(filters.dateRange.start);
+      const startDateNormalized = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const startTime = startDateNormalized.getTime();
+      
+      const endDate = new Date(filters.dateRange.end);
+      const endDateNormalized = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+      const endTime = endDateNormalized.getTime();
+      
       // Inclusive range: include observations on start and end dates
-      if (obsTime < startTime || obsTime > endTime) return false;
+      // Compare normalized dates (ignoring time component for start, including end of day for end)
+      // Both dates are now normalized to local timezone, so comparison should work correctly
+      const isInRange = obsTime >= startTime && obsTime <= endTime;
+      if (!isInRange) return false;
     }
 
     if (filters.thresholdStatus) {

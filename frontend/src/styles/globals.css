@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Calendar dropdown buttons layout fix */
+.rdp-caption_dropdowns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.rdp-dropdown_month,
+.rdp-dropdown_year {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rdp-dropdown_month select,
+.rdp-dropdown_year select {
+  appearance: none;
+  background-color: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.rdp-dropdown_month select:hover,
+.rdp-dropdown_year select:hover {
+  background-color: hsl(var(--accent));
+}
+
+.rdp-dropdown_icon {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.5;
+  margin-left: 0.25rem;
+  pointer-events: none;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

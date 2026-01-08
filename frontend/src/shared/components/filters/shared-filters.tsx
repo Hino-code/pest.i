@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Card } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -33,6 +33,7 @@ import {
   createDefaultFiltersWithBackend,
 } from "@/shared/types/filters";
 import { getFilterOptions } from "@/shared/lib/filter-service";
+import { useDashboardStore } from "@/state/store";
 
 interface SharedFiltersProps {
   filters: FilterValues;
@@ -51,6 +52,9 @@ export function SharedFilters({
 }: SharedFiltersProps) {
   const defaultFilters = useMemo(() => createDefaultFilters(), []);
 
+  // Get observations from store to find most recent date
+  const observations = useDashboardStore((state) => state.observations);
+
   // Fetch filter options from backend
   const [filterOptions, setFilterOptions] = useState<{
     years: number[];
@@ -60,6 +64,13 @@ export function SharedFilters({
     thresholdStatuses: string[];
     actionStatuses: string[];
   } | null>(null);
+
+  // Get the most recent date from observations data
+  const mostRecentDate = useMemo(() => {
+    if (observations.length === 0) return new Date();
+    const dates = observations.map((obs) => new Date(obs.date));
+    return new Date(Math.max(...dates.map((d) => d.getTime())));
+  }, [observations]);
 
   useEffect(() => {
     getFilterOptions()
@@ -78,6 +89,18 @@ export function SharedFilters({
       });
   }, []);
 
+  // Compute year range from available data years
+  const yearRange = useMemo(() => {
+    if (filterOptions?.years && filterOptions.years.length > 0) {
+      // Years are sorted descending (newest first) from backend
+      const newestYear = filterOptions.years[0];
+      const oldestYear = filterOptions.years[filterOptions.years.length - 1];
+      return { fromYear: oldestYear, toYear: newestYear };
+    }
+    // Fallback to current year ± 10 if no data available
+    return { fromYear: filters.year - 10, toYear: filters.year + 10 };
+  }, [filterOptions?.years, filters.year]);
+
   const toPickerRange = (range: FilterValues["dateRange"]): PickerDateRange => {
     if (!range) return { from: undefined, to: undefined };
     return {
@@ -90,10 +113,40 @@ export function SharedFilters({
   const [tempDateRange, setTempDateRange] = useState<PickerDateRange>(
     toPickerRange(filters.dateRange)
   );
+
+  // Compute default month based on available data (must be after tempDateRange declaration)
+  const defaultMonthValue = useMemo(() => {
+    if (tempDateRange?.from) {
+      return new Date(tempDateRange.from);
+    }
+    if (filterOptions?.years && filterOptions.years.length > 0) {
+      // Use the newest year (first in array) from actual data
+      return new Date(filterOptions.years[0], 0, 1);
+    }
+    // Fallback to selected year
+    return new Date(filters.year, 0, 1);
+  }, [tempDateRange?.from, filterOptions?.years, filters.year]);
   const [datePopoverOpen, setDatePopoverOpen] = useState(false);
+  const [weekSelectionMode, setWeekSelectionMode] = useState(false);
+  const lastAppliedRangeRef = useRef<{
+    from: number | null;
+    to: number | null;
+  }>({
+    from: null,
+    to: null,
+  });
 
   useEffect(() => {
     setTempDateRange(toPickerRange(filters.dateRange));
+    // Update ref when filter changes externally
+    if (filters.dateRange) {
+      lastAppliedRangeRef.current = {
+        from: new Date(filters.dateRange.start).setHours(0, 0, 0, 0),
+        to: new Date(filters.dateRange.end).setHours(23, 59, 59, 999),
+      };
+    } else {
+      lastAppliedRangeRef.current = { from: null, to: null };
+    }
   }, [filters.dateRange]);
 
   const updateFilter = <K extends keyof FilterValues>(
@@ -114,21 +167,83 @@ export function SharedFilters({
 
   const applyDateRange = () => {
     if (tempDateRange?.from && tempDateRange?.to) {
-      // Set start to beginning of day (00:00:00)
+      // Set start to beginning of day (00:00:00) in local timezone
       const startDate = new Date(tempDateRange.from);
       startDate.setHours(0, 0, 0, 0);
 
-      // Set end to end of day (23:59:59.999) to include the entire selected day
+      // Set end to end of day (23:59:59.999) in local timezone to include the entire selected day
       const endDate = new Date(tempDateRange.to);
       endDate.setHours(23, 59, 59, 999);
 
+      const newStartTime = startDate.getTime();
+      const newEndTime = endDate.getTime();
+
+      // Debug logging
+      console.log("Applying date range:", {
+        from: tempDateRange.from,
+        to: tempDateRange.to,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        startDateLocal: `${startDate.getFullYear()}-${String(
+          startDate.getMonth() + 1
+        ).padStart(2, "0")}-${String(startDate.getDate()).padStart(2, "0")}`,
+        endDateLocal: `${endDate.getFullYear()}-${String(
+          endDate.getMonth() + 1
+        ).padStart(2, "0")}-${String(endDate.getDate()).padStart(2, "0")}`,
+      });
+
+      // Update the filter - this will trigger onFilterChange which updates the store
       updateFilter("dateRange", {
         start: startDate,
         end: endDate,
       });
+
+      // Update ref after applying to prevent duplicate applications
+      lastAppliedRangeRef.current = {
+        from: newStartTime,
+        to: newEndTime,
+      };
+
+      // Close popover after applying
       setDatePopoverOpen(false);
     }
   };
+
+  // Auto-apply date range when both from and to are selected
+  // Only apply if the range is different from the last applied range
+  useEffect(() => {
+    // Only auto-apply when popover is open and both dates are selected
+    if (!datePopoverOpen || !tempDateRange?.from || !tempDateRange?.to) {
+      return;
+    }
+
+    const newStartTime = new Date(tempDateRange.from).setHours(0, 0, 0, 0);
+    const newEndTime = new Date(tempDateRange.to).setHours(23, 59, 59, 999);
+
+    // Only auto-apply if the range has actually changed from the last applied range
+    const hasChanged =
+      lastAppliedRangeRef.current.from !== newStartTime ||
+      lastAppliedRangeRef.current.to !== newEndTime;
+
+    if (!hasChanged) {
+      return;
+    }
+
+    // Small delay to ensure the calendar UI has updated and both dates are fully selected
+    const timer = setTimeout(() => {
+      // Double-check that dates are still valid before applying
+      if (tempDateRange?.from && tempDateRange?.to) {
+        applyDateRange();
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    tempDateRange?.from ? tempDateRange.from.getTime() : null,
+    tempDateRange?.to ? tempDateRange.to.getTime() : null,
+    datePopoverOpen,
+  ]);
 
   const clearDateRange = () => {
     setTempDateRange({ from: undefined, to: undefined });
@@ -262,15 +377,135 @@ export function SharedFilters({
             sideOffset={4}
           >
             <div className="p-3">
+              {/* Quick selection buttons */}
+              <div className="grid grid-cols-2 gap-2 mb-3 pb-3 border-b">
+                <Button
+                  type="button"
+                  variant={weekSelectionMode ? "default" : "outline"}
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    setWeekSelectionMode(!weekSelectionMode);
+                  }}
+                >
+                  {weekSelectionMode ? "Cancel Week" : "Select Week"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    // Select week containing the most recent date from data (Monday to Sunday)
+                    const referenceDate = new Date(mostRecentDate);
+                    const dayOfWeek = referenceDate.getDay();
+                    const diff =
+                      referenceDate.getDate() -
+                      dayOfWeek +
+                      (dayOfWeek === 0 ? -6 : 1); // Adjust to Monday
+                    const monday = new Date(referenceDate.setDate(diff));
+                    monday.setHours(0, 0, 0, 0);
+                    const sunday = new Date(monday);
+                    sunday.setDate(sunday.getDate() + 6);
+                    sunday.setHours(23, 59, 59, 999);
+                    setTempDateRange({ from: monday, to: sunday });
+                    setWeekSelectionMode(false);
+                  }}
+                >
+                  This Week
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    // Select month containing the most recent date from data
+                    const referenceDate = new Date(mostRecentDate);
+                    const firstDay = new Date(
+                      referenceDate.getFullYear(),
+                      referenceDate.getMonth(),
+                      1
+                    );
+                    firstDay.setHours(0, 0, 0, 0);
+                    const lastDay = new Date(
+                      referenceDate.getFullYear(),
+                      referenceDate.getMonth() + 1,
+                      0
+                    );
+                    lastDay.setHours(23, 59, 59, 999);
+                    setTempDateRange({ from: firstDay, to: lastDay });
+                    setWeekSelectionMode(false);
+                  }}
+                >
+                  This Month
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    // Select year containing the most recent date from data
+                    const referenceDate = new Date(mostRecentDate);
+                    const firstDay = new Date(
+                      referenceDate.getFullYear(),
+                      0,
+                      1
+                    );
+                    firstDay.setHours(0, 0, 0, 0);
+                    const lastDay = new Date(
+                      referenceDate.getFullYear(),
+                      11,
+                      31
+                    );
+                    lastDay.setHours(23, 59, 59, 999);
+                    setTempDateRange({ from: firstDay, to: lastDay });
+                    setWeekSelectionMode(false);
+                  }}
+                >
+                  This Year
+                </Button>
+              </div>
+              {weekSelectionMode && (
+                <div className="mb-2 p-2 bg-muted rounded-md text-sm text-muted-foreground">
+                  Click on any day to select its entire week (Monday - Sunday)
+                </div>
+              )}
               <Calendar
                 mode="range"
                 selected={tempDateRange}
-                onSelect={(range) =>
-                  setTempDateRange(range || { from: undefined, to: undefined })
-                }
-                defaultMonth={tempDateRange?.from || new Date()}
+                onSelect={(range) => {
+                  if (weekSelectionMode && range?.from) {
+                    // When in week selection mode, select the entire week containing the clicked day
+                    const clickedDate = new Date(range.from);
+                    const dayOfWeek = clickedDate.getDay();
+                    const diff =
+                      clickedDate.getDate() -
+                      dayOfWeek +
+                      (dayOfWeek === 0 ? -6 : 1); // Adjust to Monday
+                    const monday = new Date(clickedDate.setDate(diff));
+                    monday.setHours(0, 0, 0, 0);
+                    const sunday = new Date(monday);
+                    sunday.setDate(sunday.getDate() + 6);
+                    sunday.setHours(23, 59, 59, 999);
+                    setTempDateRange({ from: monday, to: sunday });
+                    setWeekSelectionMode(false); // Exit week selection mode after selection
+                  } else {
+                    // Normal range selection
+                    const newRange = range || {
+                      from: undefined,
+                      to: undefined,
+                    };
+                    setTempDateRange(newRange);
+                  }
+                }}
+                defaultMonth={defaultMonthValue}
                 numberOfMonths={1}
                 initialFocus
+                captionLayout="dropdown-buttons"
+                fromYear={yearRange.fromYear}
+                toYear={yearRange.toYear}
               />
               <div className="flex gap-2 pt-3 mt-3 border-t">
                 <Button
