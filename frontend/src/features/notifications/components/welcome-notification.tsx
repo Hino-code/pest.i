@@ -52,29 +52,29 @@ export function WelcomeNotification({
       className="fixed top-4 right-4 w-96 space-y-2"
       style={{ zIndex: Z_INDEX.NOTIFICATION }}
     >
-      <Card className="p-4 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800">
+      <Card className="p-4 bg-white border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/50">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-2">
               <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-medium text-emerald-600 dark:text-emerald-400">
+              <h3 className="font-medium text-gray-900 dark:text-emerald-100">
                 Welcome Back!
               </h3>
             </div>
-            <p className="text-sm text-emerald-600/80 dark:text-emerald-400 mb-3">
+            <p className="text-sm text-gray-600 dark:text-emerald-200/90 mb-3">
               {getGreeting()}, {user.username}! You've successfully signed in to
               Pest.i.
             </p>
             <div className="flex items-center space-x-2 mb-2">
               <Badge
                 variant="outline"
-                className="text-emerald-600 border-emerald-200 dark:text-emerald-400 dark:border-emerald-700"
+                className="text-gray-700 border-gray-300 bg-white dark:text-emerald-300 dark:border-emerald-700 dark:bg-emerald-950/30"
               >
                 {user.role}
               </Badge>
               <Badge
                 variant="outline"
-                className="text-emerald-600 border-emerald-200 dark:text-emerald-400 dark:border-emerald-700"
+                className="text-gray-700 border-gray-300 bg-white dark:text-emerald-300 dark:border-emerald-700 dark:bg-emerald-950/30"
               >
                 System Online
               </Badge>
@@ -84,21 +84,21 @@ export function WelcomeNotification({
             variant="ghost"
             size="sm"
             onClick={onDismiss}
-            className="h-6 w-6 p-0 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+            className="h-6 w-6 p-0 text-gray-500 hover:text-gray-700 dark:text-emerald-400 dark:hover:text-emerald-300"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
       </Card>
 
-      <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30">
+      <Alert className="border-gray-200 bg-white dark:border-blue-800/50 dark:bg-blue-950/40">
         <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-        <AlertDescription className="text-blue-800 dark:text-blue-400">
+        <AlertDescription className="text-gray-700 dark:text-blue-100">
           <div className="flex items-center justify-between">
             <span>System Status: All sensors operational</span>
             <Badge
               variant="outline"
-              className="text-blue-700 border-blue-300 dark:text-blue-400 dark:border-blue-700"
+              className="text-gray-700 border-gray-300 bg-white dark:text-blue-300 dark:border-blue-700 dark:bg-blue-950/30"
             >
               24 Active
             </Badge>
@@ -106,9 +106,9 @@ export function WelcomeNotification({
         </AlertDescription>
       </Alert>
 
-      <Alert className="border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950/30">
+      <Alert className="border-gray-200 bg-white dark:border-gray-800/50 dark:bg-gray-900/50">
         <Clock className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-        <AlertDescription className="text-gray-700 dark:text-gray-300 text-xs">
+        <AlertDescription className="text-gray-600 dark:text-gray-200 text-xs">
           {getFormattedTime()}
         </AlertDescription>
       </Alert>

@@ -64,70 +64,24 @@ export function NotificationBell({ onViewAll }: NotificationBellProps) {
     onViewAll();
   };
 
-  // Get semantic styling based on notification type
-  const getNotificationTypeStyles = (type: string) => {
-    switch (type) {
-      case "alert":
-      case "critical":
-        return {
-          background: "!bg-white dark:bg-rose-950/30",
-          border: "border-l-4 border-l-rose-500 border-y border-r border-gray-200 dark:border-rose-800 dark:border-l-rose-500",
-          titleColor: "text-gray-900 dark:text-rose-100",
-          descriptionColor: "text-gray-600 dark:text-rose-200/80",
-          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-rose-950/50",
-        };
-      case "warning":
-        return {
-          background: "!bg-white dark:bg-amber-950/30",
-          border: "border-l-4 border-l-amber-500 border-y border-r border-gray-200 dark:border-amber-800 dark:border-l-amber-500",
-          titleColor: "text-gray-900 dark:text-amber-100",
-          descriptionColor: "text-gray-600 dark:text-amber-200/80",
-          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-amber-950/50",
-        };
-      case "info":
-        return {
-          background: "!bg-white dark:bg-indigo-950/30",
-          border: "border-l-4 border-l-indigo-500 border-y border-r border-gray-200 dark:border-indigo-800 dark:border-l-indigo-500",
-          titleColor: "text-gray-900 dark:text-indigo-100",
-          descriptionColor: "text-gray-600 dark:text-indigo-200/80",
-          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-indigo-950/50",
-        };
-      case "success":
-        return {
-          background: "!bg-white dark:bg-emerald-950/30",
-          border: "border-l-4 border-l-emerald-500 border-y border-r border-gray-200 dark:border-emerald-800 dark:border-l-emerald-500",
-          titleColor: "text-gray-900 dark:text-emerald-100",
-          descriptionColor: "text-gray-600 dark:text-emerald-200/80",
-          hoverBackground: "hover:bg-gray-50 !dark:hover:bg-emerald-950/50",
-        };
-      default:
-        return {
-          background: "bg-white dark:bg-card/50",
-          border: "border-l-4 border-l-gray-300 border-y border-r border-gray-200 dark:border-border",
-          titleColor: "text-foreground dark:text-foreground",
-          descriptionColor: "text-muted-foreground dark:text-muted-foreground",
-          hoverBackground: "hover:bg-gray-50 dark:hover:bg-muted/30",
-        };
-    }
-  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case "alert":
         return (
-          <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+          <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
         );
       case "warning":
         return (
-          <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
         );
       case "success":
         return (
-          <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
         );
       case "info":
       default:
-        return <Info className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />;
+        return <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />;
     }
   };
 
@@ -212,9 +166,7 @@ export function NotificationBell({ onViewAll }: NotificationBellProps) {
               role="list"
               aria-label="Recent notifications"
             >
-              {notifications.map((notification) => {
-                const typeStyles = getNotificationTypeStyles(notification.type);
-                return (
+              {notifications.map((notification) => (
                 <div
                   key={notification.id}
                   role="listitem"
@@ -222,7 +174,9 @@ export function NotificationBell({ onViewAll }: NotificationBellProps) {
                   aria-label={`${notification.title}${
                     notification.read ? "" : " (unread)"
                   }`}
-                  className={`p-3 border-b border-border/50 cursor-pointer transition-colors outline-none group ${typeStyles.background} ${typeStyles.border} ${typeStyles.hoverBackground}`}
+                  className={`p-3 hover:bg-muted/50 focus:bg-muted/50 cursor-pointer transition-colors outline-none group ${
+                    !notification.read ? "bg-blue-50 dark:bg-blue-950/20" : ""
+                  }`}
                   onClick={() => {
                     if (!notification.read) {
                       handleMarkAsRead(notification.id);
@@ -241,7 +195,11 @@ export function NotificationBell({ onViewAll }: NotificationBellProps) {
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-start justify-between gap-2">
                         <p
-                          className={`text-sm font-medium leading-tight ${typeStyles.titleColor}`}
+                          className={`text-sm font-medium leading-tight ${
+                            !notification.read
+                              ? "text-foreground"
+                              : "text-muted-foreground"
+                          }`}
                         >
                           {notification.title}
                         </p>
@@ -254,10 +212,10 @@ export function NotificationBell({ onViewAll }: NotificationBellProps) {
                           )}
                         </div>
                       </div>
-                      <p className={`text-xs line-clamp-2 ${typeStyles.descriptionColor}`}>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
                         {notification.message}
                       </p>
-                      <div className={`flex items-center gap-1 text-xs ${typeStyles.descriptionColor}`}>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" aria-hidden="true" />
                         <span>
                           {formatDistanceToNow(notification.timestamp, {
@@ -268,8 +226,7 @@ export function NotificationBell({ onViewAll }: NotificationBellProps) {
                     </div>
                   </div>
                 </div>
-              );
-              })}
+              ))}
             </div>
           )}
         </div>
